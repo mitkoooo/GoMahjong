@@ -22,11 +22,22 @@ type Tile struct {
 
 func NewTile(cardinality int, suit Suit) *Tile {
 
-	sprite :=
+	// 0 to 8 bamboo
+	// 9 to 17 dot
+	// 18 to 27 thousand
+
+	var index int
+
+	if suit == dot {
+
+	}
+
+	sprite := assets.TileSprites[0]
 
 	t := &Tile{
 		cardinality: cardinality,
 		suit: suit,
+		sprite: sprite,
 	}
 
 	return t

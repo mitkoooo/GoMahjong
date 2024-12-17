@@ -21,7 +21,7 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	screen.DrawImage(assets.TileSprite, nil)
+	screen.DrawImage(, nil)
 }
 
 func NewGame() *Game {

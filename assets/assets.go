@@ -3,6 +3,7 @@ package assets
 import (
 	"image"
 	_ "image/png"
+	"io/fs"
 
 	"embed"
 
@@ -12,7 +13,8 @@ import (
 //go:embed *
 var assets embed.FS
 
-var TileSprite = mustLoadImage("deck_mahjong_light_0.png")
+var TileSprites = mustLoadImages("tiles/*.png")
+var HonorTileSprites = mustLoadImages("tiles/honor/*.png")
 
 func mustLoadImage(name string) *ebiten.Image {
 	f, err := assets.Open(name)
@@ -27,4 +29,18 @@ func mustLoadImage(name string) *ebiten.Image {
 	}
 
 	return ebiten.NewImageFromImage(img)
+}
+
+func mustLoadImages(path string) []*ebiten.Image {
+	matches, err := fs.Glob(assets, path)
+	if err != nil {
+		panic(err)
+	}
+
+	images := make([]*ebiten.Image, len(matches))
+	for i, match := range matches {
+		images[i] = mustLoadImage(match)
+	}
+
+	return images
 }

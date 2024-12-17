@@ -1,4 +1,4 @@
-module mahjong
+module github.com/mitkoooo/GoMahjong
 
 go 1.23.4
 

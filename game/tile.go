@@ -1,6 +1,8 @@
 package game
 
 import (
+	"fmt"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/mitkoooo/GoMahjong/assets"
 )
@@ -8,36 +10,75 @@ import (
 type Suit int
 
 const (
-    bamboo Suit = iota + 1
-    dot
-    thousand
+	bamboo Suit = iota + 1
+	dot
+	thousand
+	dragon
+	wind
+	flower
+	season
 )
 
 type Tile struct {
-	name string
+	position Vector
 	cardinality int
 	suit Suit
 	sprite *ebiten.Image
 }
 
-func NewTile(cardinality int, suit Suit) *Tile {
+func (t *Tile) Draw(screen *ebiten.Image) {
 
-	// 0 to 8 bamboo
-	// 9 to 17 dot
-	// 18 to 27 thousand
+	op := &ebiten.DrawImageOptions{}
 
-	var index int
 
-	if suit == dot {
+	op.GeoM.Translate(t.position.X, t.position.Y)
 
+	screen.DrawImage(t.sprite, op)
+
+}
+
+
+func NewTile(cardinality int, suit Suit, position Vector) *Tile {
+
+	var suit_name string
+
+	switch suit {
+
+	case bamboo:
+		suit_name = "bamboo"
+
+	case dot:
+		suit_name = "dot"
+
+	case thousand:
+		suit_name = "thousand"
+
+	case dragon:
+		suit_name = "dragon"
+
+	case wind:
+		suit_name = "wind"
+
+	case flower:
+		suit_name = "flower"
+
+	case season:
+		suit_name = "season"
+			
+	default:
+		suit_name = ""
 	}
 
-	sprite := assets.TileSprites[0]
+	key := fmt.Sprintf("%s_%d", suit_name, cardinality)
+
+
+	sprite := assets.TileSprites[key]
 
 	t := &Tile{
 		cardinality: cardinality,
 		suit: suit,
 		sprite: sprite,
+		position: position,
 	}
 
 	return t

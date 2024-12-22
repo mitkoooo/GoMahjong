@@ -1,6 +1,20 @@
 package game
 
 type Player struct {
-	deck []*Tile
+	game *Game
+	deck *Deck
 	score int
+}
+
+func NewPlayer(g *Game) *Player {
+
+
+
+
+	p := &Player{
+		game: g,
+		score: 0,
+	}
+
+	return p
 }

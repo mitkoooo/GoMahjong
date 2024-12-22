@@ -28,8 +28,8 @@ type Tile struct {
 
 func (t *Tile) Draw(screen *ebiten.Image) {
 
-	op := &ebiten.DrawImageOptions{}
 
+	op := &ebiten.DrawImageOptions{}
 
 	op.GeoM.Translate(t.position.X, t.position.Y)
 

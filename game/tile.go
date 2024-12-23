@@ -35,8 +35,11 @@ func (t *Tile) Draw(screen *ebiten.Image) {
 
 	op.GeoM.Translate(t.position.X, t.position.Y)
 
-	screen.DrawImage(t.sprite, op)
-
+	if t.isRevealed {
+		screen.DrawImage(t.sprite, op)
+	} else {
+		screen.DrawImage(t.spriteBack, op)
+	}
 }
 
 
@@ -75,11 +78,13 @@ func NewTile(cardinality int, suit Suit, position Vector) *Tile {
 
 
 	sprite := assets.TileSprites[key]
+	spriteBack := assets.TileBackSprite
 
 	t := &Tile{
 		cardinality: cardinality,
 		suit: suit,
 		sprite: sprite,
+		spriteBack: spriteBack,
 		position: position,
 	}
 

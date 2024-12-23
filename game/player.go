@@ -12,16 +12,27 @@ type Player struct {
 	deck *Deck
 	score int
 	isDealer bool
+	tileLimit int
 
 	input *input.Handler
 }
 
-func NewPlayer(g *Game) *Player {
+func NewPlayer(g *Game, isDealer bool) *Player {
+
+	var tileLimit int
+
+	if isDealer {
+		tileLimit = 14
+	} else {
+		tileLimit = 13
+	}
 
 	p := &Player{
 		game: g,
 		score: 0,
 		deck: NewDeck(make([]*Tile, 0)),
+		isDealer: isDealer,
+		tileLimit: tileLimit,
 	}
 
 	return p
@@ -31,21 +42,14 @@ var curFreeX, curFreeY float64 = screenWidth*0.05, screenHeight*0.90
 
 func DrawTile(this *Player) {
 
-	var tileLimit int
-
-	if this.isDealer {
-		tileLimit = 14
-	} else {
-		tileLimit = 13
-	}
-
 	fmt.Println(len(this.game.remainingTiles))
 
-	if IsNoneRemainingTiles(this.game)|| len(this.deck.currentTiles) + len(this.deck.revealedTiles) > tileLimit{
+	if IsNoneRemainingTiles(this.game)|| len(this.deck.currentTiles) + len(this.deck.revealedTiles) > this.tileLimit{
 		return 
 	}
 
 	newTile := this.game.remainingTiles[0]
+	newTile.isRevealed = true
 
 	newTile.position = Vector{curFreeX, curFreeY}
 
@@ -66,9 +70,11 @@ func DrawTile(this *Player) {
 
 
 func (p *Player) Update() {
-	if p.input.ActionIsPressed(ActionDrawTile) {
+
+
+
+	if p.game.timer.elapsedTime >= 100 && len(p.deck.currentTiles) <= p.tileLimit {
 		time.Sleep(2000)
-		fmt.Println("Drawn a tile")
 		DrawTile(p)
 	}
 }

@@ -12,7 +12,6 @@ const (
 	ActionDrawTile input.Action = iota
 )
 
-// 640, 480
 const (
 	screenWidth, screenHeight  = 1280, 960
 )
@@ -21,14 +20,16 @@ const (
 type Game struct {
 	player *Player
 	remainingTiles []*Tile
+
 	inputSystem input.System
+	timer *Timer
 }
 
 func (g *Game) Update() error {
 	// Update the logical state
 	g.inputSystem.Update()
 	g.player.Update()
-
+	Tick(g.timer)
 
 	return nil
 }
@@ -62,7 +63,7 @@ func NewGame() *Game {
 	GenerateTiles(g)
 	ShuffleTiles(g)
 
-	g.player = NewPlayer(g)
+	g.player = NewPlayer(g, true)
 
 	g.inputSystem.Init(input.SystemConfig{
 		DevicesEnabled: input.AnyDevice,
@@ -70,6 +71,8 @@ func NewGame() *Game {
 	keymap := input.Keymap{
 		ActionDrawTile:  {input.KeySpace},
 	}
+
+	g.timer = NewTimer()
 
 	g.player.input = g.inputSystem.NewHandler(0, keymap)
 

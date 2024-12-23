@@ -35,7 +35,7 @@ func (t *Tile) Draw(screen *ebiten.Image) {
 	op.GeoM.Translate(t.position.X, t.position.Y)
 
 	if t.isRevealed {
-		op.GeoM.Scale(1.7, 1.7)
+		op.GeoM.Scale(2, 2)
 		spriteToDraw = t.sprite
 	} else {
 		spriteToDraw = assets.TileBackSprite

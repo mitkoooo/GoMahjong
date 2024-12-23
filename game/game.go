@@ -135,7 +135,7 @@ func GenerateTiles(g *Game) {
 			// Repeat twice
 			// 18 * 2 * 4 = 144
 
-			var curFreeX, curFreeY float64 = screenWidth*0.20, screenHeight*0.01
+			var curFreeX, curFreeY float64 = screenWidth*0.3, screenHeight*0.01
 
 			var buildDirection = &curFreeX
 

@@ -38,7 +38,7 @@ func NewPlayer(g *Game, isDealer bool) *Player {
 	return p
 }
 
-var curFreeX, curFreeY float64 = screenWidth*0.05, screenHeight*0.90
+var curFreeX, curFreeY float64 = screenWidth * 0, screenHeight * 0.5
 
 func DrawTile(this *Player) {
 

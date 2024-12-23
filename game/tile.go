@@ -24,22 +24,24 @@ type Tile struct {
 	cardinality int
 	suit Suit
 	sprite *ebiten.Image
-	spriteBack *ebiten.Image
 	isRevealed bool
 }
 
 func (t *Tile) Draw(screen *ebiten.Image) {
 
-
+	var spriteToDraw *ebiten.Image
 	op := &ebiten.DrawImageOptions{}
-
+	
 	op.GeoM.Translate(t.position.X, t.position.Y)
 
 	if t.isRevealed {
-		screen.DrawImage(t.sprite, op)
+		op.GeoM.Scale(1.7, 1.7)
+		spriteToDraw = t.sprite
 	} else {
-		screen.DrawImage(t.spriteBack, op)
+		spriteToDraw = assets.TileBackSprite
 	}
+
+	screen.DrawImage(spriteToDraw, op)
 }
 
 
@@ -78,13 +80,11 @@ func NewTile(cardinality int, suit Suit, position Vector) *Tile {
 
 
 	sprite := assets.TileSprites[key]
-	spriteBack := assets.TileBackSprite
 
 	t := &Tile{
 		cardinality: cardinality,
 		suit: suit,
 		sprite: sprite,
-		spriteBack: spriteBack,
 		position: position,
 	}
 

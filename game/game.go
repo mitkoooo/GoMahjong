@@ -2,6 +2,7 @@ package game
 
 import (
 	_ "image/png"
+	"math"
 	"math/rand/v2"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -13,7 +14,7 @@ const (
 )
 
 const (
-	screenWidth, screenHeight  = 1280, 960
+	screenWidth, screenHeight  = 1500, 1500
 )
 
 
@@ -90,12 +91,11 @@ func IsNoneRemainingTiles(g *Game) bool {
 
 func GenerateTiles(g *Game) {
 		// Initialize tile pool
-		var curFreeX, curFreeY float64 = 0, 0
+		
 
 	
 
 		for _, suit := range []Suit{bamboo, dot, thousand, dragon, wind, flower, season} {
-	
 			var numberLimit, numI int
 	
 			// determine number of the tiles to be generated
@@ -117,24 +117,63 @@ func GenerateTiles(g *Game) {
 				numberLimit = 0
 			}
 	
-	
+
 	
 			for i := 0; i < numberLimit * numI; i++ {
 	
-				position := Vector{curFreeX, curFreeY}
+				position := Vector{0, 0}
 	
 				tile := NewTile(i % numberLimit, suit, position)
 	
 			g.remainingTiles = append(g.remainingTiles, tile)
-	
-			curFreeX += 44
-	
-			if curFreeX > screenWidth*0.95 {
-				curFreeX = 0
-				curFreeY += 60
-		}
+
 			}
 	
+			// Form a square
+			// Form a wall out of 18 tiles
+			// Switch directions
+			// Repeat twice
+			// 18 * 2 * 4 = 144
+
+			var curFreeX, curFreeY float64 = screenWidth*0.20, screenHeight*0.01
+
+			var buildDirection = &curFreeX
+
+			deltaPosition := 44
+
+			positionShift := 0
+	
+			for i, t := range g.remainingTiles {
+
+				if i != 0 && i % 18 == 0 {
+
+					if buildDirection == &curFreeX {
+						buildDirection = &curFreeY
+						deltaPosition = int((44 * float64(deltaPosition)) / math.Abs(float64(deltaPosition))) + positionShift
+					} else {
+						buildDirection = &curFreeX
+						deltaPosition = int((60 * float64(deltaPosition)) / math.Abs(float64(deltaPosition))) + positionShift
+					}
+
+					if i % 36 == 0 {
+						deltaPosition *= -1
+					}
+
+				}
+
+				t.position = Vector{curFreeX, curFreeY}
+
+				*buildDirection += float64(deltaPosition)
+
+			// 	if curFreeX > screenWidth*0.95 {
+			// 		curFreeX = 0
+			// 		curFreeY += 60
+			// }
+
+			}
+
+
+
 		}
 }
 

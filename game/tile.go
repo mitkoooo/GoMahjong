@@ -24,6 +24,8 @@ type Tile struct {
 	cardinality int
 	suit Suit
 	sprite *ebiten.Image
+	spriteBack *ebiten.Image
+	isRevealed bool
 }
 
 func (t *Tile) Draw(screen *ebiten.Image) {

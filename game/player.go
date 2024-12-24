@@ -42,9 +42,11 @@ var curFreeX, curFreeY float64 = screenWidth * 0.02, screenHeight * 0.4
 
 func DrawTile(this *Player) {
 
+	// Random break point from 1 to 18
+
 	fmt.Println(len(this.game.remainingTiles))
 
-	if IsNoneRemainingTiles(this.game)|| len(this.deck.currentTiles) + len(this.deck.revealedTiles) > this.tileLimit{
+	if IsNoneRemainingTiles(this.game)|| len(this.deck.currentTiles) + len(this.deck.revealedTiles) >= this.tileLimit{
 		return 
 	}
 
@@ -73,7 +75,7 @@ func (p *Player) Update() {
 
 
 
-	if p.game.timer.elapsedTime >= 100 && len(p.deck.currentTiles) <= p.tileLimit {
+	if p.game.timer.elapsedTime >= 100 && len(p.deck.currentTiles) < p.tileLimit {
 		time.Sleep(2000)
 		DrawTile(p)
 	}

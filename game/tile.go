@@ -25,6 +25,7 @@ type Tile struct {
 	suit Suit
 	sprite *ebiten.Image
 	isRevealed bool
+	isFlipped bool
 }
 
 func (t *Tile) Draw(screen *ebiten.Image) {
@@ -38,7 +39,11 @@ func (t *Tile) Draw(screen *ebiten.Image) {
 		op.GeoM.Scale(2, 2)
 		spriteToDraw = t.sprite
 	} else {
+		if t.isFlipped {
+			spriteToDraw = assets.TileBackSpriteFlipped
+		} else {
 		spriteToDraw = assets.TileBackSprite
+		}
 	}
 
 	screen.DrawImage(spriteToDraw, op)
@@ -88,5 +93,11 @@ func NewTile(cardinality int, suit Suit, position Vector) *Tile {
 		position: position,
 	}
 
+	t.isFlipped = false
+
 	return t
+}
+
+func Flip(t *Tile) {
+	t.isFlipped = !t.isFlipped
 }

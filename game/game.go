@@ -1,8 +1,8 @@
 package game
 
 import (
+	"fmt"
 	_ "image/png"
-	"math"
 	"math/rand/v2"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -45,8 +45,8 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
 func (g *Game) Draw(screen *ebiten.Image) {
 
 	for _, t := range g.remainingTiles {
-
 		t.Draw(screen)
+		
 	}
 
 	for _, deckT := range g.player.deck.currentTiles {
@@ -63,6 +63,7 @@ func NewGame() *Game {
 
 	GenerateTiles(g)
 	ShuffleTiles(g)
+	InitializeTilesOnScreen(g)
 
 	g.player = NewPlayer(g, true)
 
@@ -91,9 +92,6 @@ func IsNoneRemainingTiles(g *Game) bool {
 
 func GenerateTiles(g *Game) {
 		// Initialize tile pool
-		
-
-	
 
 		for _, suit := range []Suit{bamboo, dot, thousand, dragon, wind, flower, season} {
 			var numberLimit, numI int
@@ -122,58 +120,14 @@ func GenerateTiles(g *Game) {
 			for i := 0; i < numberLimit * numI; i++ {
 	
 				position := Vector{0, 0}
-	
+				
 				tile := NewTile(i % numberLimit, suit, position)
 	
 			g.remainingTiles = append(g.remainingTiles, tile)
 
 			}
 	
-			// Form a square
-			// Form a wall out of 18 tiles
-			// Switch directions
-			// Repeat twice
-			// 18 * 2 * 4 = 144
-
-			var curFreeX, curFreeY float64 = screenWidth*0.3, screenHeight*0.01
-
-			var buildDirection = &curFreeX
-
-			deltaPosition := 44
-
-			positionShift := 0
-	
-			for i, t := range g.remainingTiles {
-
-				if i != 0 && i % 18 == 0 {
-
-					if buildDirection == &curFreeX {
-						buildDirection = &curFreeY
-						deltaPosition = int((44 * float64(deltaPosition)) / math.Abs(float64(deltaPosition))) + positionShift
-					} else {
-						buildDirection = &curFreeX
-						deltaPosition = int((60 * float64(deltaPosition)) / math.Abs(float64(deltaPosition))) + positionShift
-					}
-
-					if i % 36 == 0 {
-						deltaPosition *= -1
-					}
-
-				}
-
-				t.position = Vector{curFreeX, curFreeY}
-
-				*buildDirection += float64(deltaPosition)
-
-			// 	if curFreeX > screenWidth*0.95 {
-			// 		curFreeX = 0
-			// 		curFreeY += 60
-			// }
-
-			}
-
-
-
+			
 		}
 }
 
@@ -188,4 +142,87 @@ func ShuffleTiles(g *Game) {
 				
 			g.remainingTiles[swapI], g.remainingTiles[i] = g.remainingTiles[i], g.remainingTiles[swapI]
 			}
+}
+
+func InitializeTilesOnScreen(g *Game) {
+	// Form a square
+	// Form a wall out of 18 tiles
+	// Switch directions
+	// Repeat twice
+	// 18 * 2 * 4 = 144
+
+	var curFreeX, curFreeY float64 = screenWidth*0.8, screenHeight*0.6
+
+	var buildDirection = &curFreeX
+
+	// Margin by which to place tiles
+	deltaPosition := -44
+
+	// At the end of the wall, add some space
+	// positionShift := 0
+
+	// Build two level wall
+	nextOnTop := false
+
+	// Flip tile sprite
+	hasToFlip := false
+
+	for i, t := range g.remainingTiles {
+		///////////////////////////////////
+
+		// This part is concerned with initializing a tile, no logic of determining where exactly
+		if hasToFlip {
+			Flip(t)
+		}
+
+		// if next is not on top, move position
+		if !nextOnTop {
+			*buildDirection += float64(deltaPosition)
+		}
+		
+		t.position = Vector{curFreeX, curFreeY}
+
+		fmt.Println(t.position)
+
+		//////////////////////////////////
+
+		// Determine position for the next tile
+
+		// If end of the wall, switch direction, add margin and flip tiles
+		if i != 0 && (i + 1) % 36 == 0 {
+
+			hasToFlip = !hasToFlip
+
+			if deltaPosition < 0 {
+			*buildDirection -= 60
+			} else {
+			*buildDirection += 44
+			}
+
+			if buildDirection == &curFreeX {
+				buildDirection = &curFreeY
+			} else {
+				buildDirection = &curFreeX
+			}
+
+			// *buildDirection += float64(positionShift)
+
+			if i + 1 == 72 {
+				deltaPosition *= -1
+				}
+
+			if deltaPosition < 0 {
+			*buildDirection += 104
+			} else {
+				*buildDirection -= 88
+			}
+		}
+
+
+
+
+		// alternate between on top and not on top
+		nextOnTop = !nextOnTop
+
+	}
 }

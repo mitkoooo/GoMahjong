@@ -16,6 +16,7 @@ var assets embed.FS
 
 var TileSprites = mustLoadImages("tiles/*.png")
 var TileBackSprite = mustLoadImage("tile_back.png")
+var TileBackSpriteFlipped = mustLoadImage("tile_back_flipped.png")
 
 func mustLoadImage(name string) *ebiten.Image {
 	f, err := assets.Open(name)
